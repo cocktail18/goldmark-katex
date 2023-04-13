@@ -32,14 +32,15 @@ func Render(w io.Writer, src []byte, display bool) error {
 	defer result.Free()
 
 	globals.Set("_EqSrc3120", context.String(string(src)))
+	var result2 quickjs.Value
 	if display {
-		result, err = context.Eval(`katex.renderToString(_EqSrc3120, { "displayMode": true, "output": "html"} )`)
+		result2, err = context.Eval(`katex.renderToString(_EqSrc3120, { "displayMode": true, "output": "html"} )`)
 	} else {
-		result, err = context.Eval(`katex.renderToString(_EqSrc3120, { "output": "html"})`)
+		result2, err = context.Eval(`katex.renderToString(_EqSrc3120, { "output": "html"})`)
 	}
-	defer result.Free()
+	defer result2.Free()
 
-	_, err = io.WriteString(w, result.String())
+	_, err = io.WriteString(w, result2.String())
 	return err
 }
 
@@ -83,9 +84,9 @@ func RenderWithOptions(w io.Writer, src []byte, options *Options, extra map[stri
 	if err != nil {
 		return err
 	}
-	result, err = context.Eval(fmt.Sprintf("katex.renderToString(_EqSrc3120, %s)", string(bs)))
-	defer result.Free()
+	result2, err := context.Eval(fmt.Sprintf("katex.renderToString(_EqSrc3120, %s)", string(bs)))
+	defer result2.Free()
 
-	_, err = io.WriteString(w, result.String())
+	_, err = io.WriteString(w, result2.String())
 	return err
 }
